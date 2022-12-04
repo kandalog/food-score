@@ -1,4 +1,20 @@
-class Score {
+interface Scoreable {
+  readonly totalScore: number;
+  render(): void;
+}
+
+interface Foodable {
+  element: HTMLDivElement;
+  clickEventHandler(): void;
+}
+
+interface Foodsable {
+  elements: NodeListOf<HTMLDivElement>;
+  readonly activeElements: HTMLDivElement[];
+  readonly activeElementsScore: number[];
+}
+
+class Score implements Scoreable {
   private static instance: Score;
   get totalScore() {
     // foodsの_activeElementsScoreを使うためにインスタンス化する
@@ -20,7 +36,7 @@ class Score {
 }
 
 // foodインスタンスの処理はFoodで作る
-class Food {
+class Food implements Foodable {
   constructor(public element: HTMLDivElement) {
     // callback関数でthisを使う場合はアドレス値(this)を固定する
     element.addEventListener("click", this.clickEventHandler.bind(this));
@@ -36,7 +52,7 @@ class Food {
 // 全てのfoodを取得する
 // それぞれFoodインスタンスを作成する
 // Foodsはシングルトンにする
-class Foods {
+class Foods implements Foodsable {
   private static instance: Foods;
 
   elements = document.querySelectorAll<HTMLDivElement>(".food");
