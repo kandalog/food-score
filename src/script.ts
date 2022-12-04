@@ -1,0 +1,63 @@
+class Score {
+  get totalScore() {
+    // foodsの_activeElementsScoreを使うためにインスタンス化する
+    const foods = new Foods();
+    return foods.activeElementsScore.reduce((total, score) => total + score, 0);
+  }
+  render() {
+    document.querySelector(".score__number")!.textContent = String(
+      this.totalScore
+    );
+  }
+}
+
+// foodインスタンスの処理はFoodで作る
+class Food {
+  constructor(public element: HTMLDivElement) {
+    // callback関数でthisを使う場合はアドレス値(this)を固定する
+    element.addEventListener("click", this.clickEventHandler.bind(this));
+  }
+
+  clickEventHandler() {
+    this.element.classList.toggle("food--active");
+    const score = new Score();
+    score.render();
+  }
+}
+
+// 全てのfoodを取得する
+// それぞれFoodインスタンスを作成する
+class Foods {
+  elements = document.querySelectorAll<HTMLDivElement>(".food");
+  private _activeElements: HTMLDivElement[] = [];
+  private _activeElementsScore: number[] = [];
+
+  get activeElements() {
+    this._activeElements = [];
+    this.elements.forEach((element) => {
+      if (element.classList.contains("food--active")) {
+        this._activeElements.push(element);
+      }
+    });
+    return this._activeElements;
+  }
+
+  get activeElementsScore() {
+    this._activeElementsScore = [];
+    this.activeElements.forEach((element) => {
+      const foodScore = element.querySelector(".food__score");
+      if (foodScore) {
+        this._activeElementsScore.push(Number(foodScore.textContent));
+      }
+    });
+    return this._activeElementsScore;
+  }
+
+  constructor() {
+    this.elements.forEach((element) => {
+      new Food(element);
+    });
+  }
+}
+
+const foods = new Foods();
