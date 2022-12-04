@@ -7,6 +7,8 @@ module.exports = {
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
+    // 内部的に保持するbundle.jsの位置を決める
+    //. 開発時と本番時で合わせるためにディレクトリ構成に合わせると良い
     publicPath: "/dist/",
   },
 
